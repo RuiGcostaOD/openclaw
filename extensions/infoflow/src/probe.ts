@@ -1,4 +1,5 @@
-import { infoflowApiRequest, type InfoflowClientCredentials } from "./client.js";
+import { getInfoflowAppAccessToken, clearTokenCache } from "./auth.js";
+import type { InfoflowClientCredentials } from "./client.js";
 import type { InfoflowProbeResult } from "./types.js";
 
 const probeCache = new Map<string, { result: InfoflowProbeResult; expiresAt: number }>();
@@ -40,19 +41,11 @@ export async function probeInfoflow(
   }
 
   try {
-    // Probe by attempting to get a token — validates credentials
-    const result = await infoflowApiRequest<{
-      code?: string;
-      data?: { app_access_token?: string };
-    }>({
-      creds,
-      method: "POST",
-      path: "/api/v1/auth/app_access_token",
-      body: {},
-      timeoutMs: INFOFLOW_PROBE_REQUEST_TIMEOUT_MS,
-    });
+    // Probe by directly requesting a token — validates appKey + appSecret
+    clearTokenCache();
+    const token = await getInfoflowAppAccessToken(creds.appKey, creds.appSecret);
 
-    if (result.data?.app_access_token) {
+    if (token) {
       return setCachedProbeResult(
         cacheKey,
         { ok: true, appKey: creds.appKey },
@@ -62,7 +55,7 @@ export async function probeInfoflow(
 
     return setCachedProbeResult(
       cacheKey,
-      { ok: false, appKey: creds.appKey, error: `API error: ${JSON.stringify(result)}` },
+      { ok: false, appKey: creds.appKey, error: "token request returned empty token" },
       PROBE_ERROR_TTL_MS,
     );
   } catch (err) {
