@@ -1,0 +1,33 @@
+{
+  "name": "@openclaw/infoflow",
+  "version": "2026.3.13",
+  "description": "OpenClaw Infoflow (如流) channel plugin",
+  "type": "module",
+  "dependencies": {
+    "@sinclair/typebox": "0.34.48",
+    "zod": "^4.3.6"
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "channel": {
+      "id": "infoflow",
+      "label": "Infoflow",
+      "selectionLabel": "Infoflow (如流)",
+      "docsPath": "/channels/infoflow",
+      "docsLabel": "infoflow",
+      "blurb": "百度如流企业通讯平台",
+      "aliases": [
+        "ruliu"
+      ],
+      "order": 75,
+      "quickstartAllowFrom": true
+    },
+    "install": {
+      "npmSpec": "@openclaw/infoflow",
+      "localPath": "extensions/infoflow",
+      "defaultChoice": "npm"
+    }
+  }
+}

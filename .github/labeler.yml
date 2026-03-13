@@ -31,6 +31,11 @@
           - "src/imessage/**"
           - "extensions/imessage/**"
           - "docs/channels/imessage.md"
+"channel: infoflow":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "extensions/infoflow/**"
+          - "docs/channels/infoflow.md"
 "channel: line":
   - changed-files:
       - any-glob-to-any-file:

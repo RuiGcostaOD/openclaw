@@ -18,6 +18,7 @@ Text is supported everywhere; media and reactions vary by channel.
 - [Feishu](/channels/feishu) — Feishu/Lark bot via WebSocket (plugin, installed separately).
 - [Google Chat](/channels/googlechat) — Google Chat API app via HTTP webhook.
 - [iMessage (legacy)](/channels/imessage) — Legacy macOS integration via imsg CLI (deprecated, use BlueBubbles for new setups).
+- [Infoflow](/channels/infoflow) — Baidu Infoflow (如流) bot via webhook (plugin, installed separately).
 - [IRC](/channels/irc) — Classic IRC servers; channels + DMs with pairing/allowlist controls.
 - [LINE](/channels/line) — LINE Messaging API bot (plugin, installed separately).
 - [Matrix](/channels/matrix) — Matrix protocol (plugin, installed separately).
