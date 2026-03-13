@@ -31,6 +31,12 @@ export async function infoflowApiRequest<T = unknown>(params: {
 
   const token = await getInfoflowAppAccessToken(creds.appKey, creds.appSecret);
   const url = `${INFOFLOW_API_BASE}${path}`;
+  const requestBody = body ? JSON.stringify(body) : undefined;
+
+  console.log(`[infoflow:api] ${method} ${url}`);
+  if (requestBody) {
+    console.log(`[infoflow:api] body: ${requestBody}`);
+  }
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -43,15 +49,21 @@ export async function infoflowApiRequest<T = unknown>(params: {
         "Content-Type": "application/json; charset=utf-8",
         LOGID: String(Date.now() * 1000),
       },
-      body: body ? JSON.stringify(body) : undefined,
+      body: requestBody,
       signal: controller.signal,
     });
 
+    const responseText = await response.text();
+    console.log(`[infoflow:api] response status: ${response.status}`);
+    console.log(`[infoflow:api] response body: ${responseText}`);
+
     if (!response.ok) {
-      throw new Error(`Infoflow API ${path} failed: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Infoflow API ${path} failed: ${response.status} ${response.statusText} - ${responseText}`,
+      );
     }
 
-    return (await response.json()) as T;
+    return JSON.parse(responseText) as T;
   } finally {
     clearTimeout(timer);
   }

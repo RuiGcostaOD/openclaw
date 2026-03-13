@@ -26,17 +26,27 @@ export async function getInfoflowAppAccessToken(
   // Infoflow requires MD5-hashed app_secret
   const md5Secret = crypto.createHash("md5").update(appSecret).digest("hex").toLowerCase();
 
+  const requestBody = { app_key: appKey, app_secret: md5Secret };
+  console.log(`[infoflow:auth] POST ${INFOFLOW_TOKEN_URL}`);
+  console.log(`[infoflow:auth] body: ${JSON.stringify(requestBody)}`);
+
   const response = await fetch(INFOFLOW_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ app_key: appKey, app_secret: md5Secret }),
+    body: JSON.stringify(requestBody),
   });
 
+  const responseText = await response.text();
+  console.log(`[infoflow:auth] response status: ${response.status}`);
+  console.log(`[infoflow:auth] response body: ${responseText}`);
+
   if (!response.ok) {
-    throw new Error(`Infoflow token request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `Infoflow token request failed: ${response.status} ${response.statusText} - ${responseText}`,
+    );
   }
 
-  const data = (await response.json()) as {
+  const data = JSON.parse(responseText) as {
     code?: string;
     data?: { app_access_token?: string; expire?: number };
   };
